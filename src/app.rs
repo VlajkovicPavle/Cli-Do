@@ -1,19 +1,27 @@
 use std::error;
 
+use tui_textarea::{Input, TextArea};
+
+use crate::widgets::create_todo::{self, CreateTodoWidget};
+
 pub type AppResult<T> = Result<T, Box<dyn error::Error>>;
 
 #[derive(Debug)]
-pub struct App {
+pub struct App<'a> {
     pub running: bool,
+    pub create_todo_widget: CreateTodoWidget<'a>,
 }
 
-impl Default for App {
+impl<'a> Default for App<'a> {
     fn default() -> Self {
-        App { running: true }
+        App {
+            running: true,
+            create_todo_widget: CreateTodoWidget::default(),
+        }
     }
 }
 
-impl App {
+impl<'a> App<'a> {
     pub fn new() -> Self {
         App::default()
     }
