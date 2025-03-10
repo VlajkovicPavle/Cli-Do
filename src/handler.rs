@@ -4,6 +4,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
     if app.create_todo_widget.is_active {
         app.create_todo_widget.key_event_handler(key_event);
+        return Ok(());
     }
     match key_event.code {
         KeyCode::Esc | KeyCode::Char('q') => {
