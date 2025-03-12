@@ -8,6 +8,7 @@ use tui::Tui;
 pub mod app;
 pub mod event;
 pub mod handler;
+pub mod persistence;
 pub mod tui;
 pub mod ui;
 pub mod widgets;
