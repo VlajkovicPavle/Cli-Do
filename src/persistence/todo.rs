@@ -18,6 +18,13 @@ pub struct CreateTodo {
     pub body: String,
 }
 
+#[derive(Default)]
+pub struct UpdateTodo {
+    pub title: Option<String>,
+    pub body: Option<String>,
+    pub id: i64,
+}
+
 pub struct Database {
     connection: Pool<Sqlite>,
 }
@@ -34,10 +41,10 @@ impl Database {
         }
     }
 
-    pub async fn insert(&self, todo: CreateTodo) -> Result<SqliteQueryResult, sqlx::Error> {
+    pub async fn insert(&self, create_todo: CreateTodo) -> Result<SqliteQueryResult, sqlx::Error> {
         let query_result = query("INSERT INTO todo (title,body) VALUES( ?, ?)")
-            .bind(todo.title)
-            .bind(todo.body)
+            .bind(create_todo.title)
+            .bind(create_todo.body)
             .execute(&self.connection)
             .await?;
         Ok(query_result)
@@ -53,6 +60,32 @@ impl Database {
     pub async fn delete(&self, todo: Todo) -> Result<SqliteQueryResult, sqlx::Error> {
         let result = sqlx::query("DELETE FROM todo WHERE id=$1")
             .bind(todo.id)
+            .execute(&self.connection)
+            .await?;
+        Ok(result)
+    }
+
+    pub async fn update_todo_title(
+        &self,
+        id: i64,
+        title: &str,
+    ) -> Result<SqliteQueryResult, sqlx::Error> {
+        let result = sqlx::query("UPDATE todo SET title=$1 WHERE id=$2")
+            .bind(title)
+            .bind(id)
+            .execute(&self.connection)
+            .await?;
+        Ok(result)
+    }
+
+    pub async fn update_todo_body(
+        &self,
+        id: i64,
+        body: &str,
+    ) -> Result<SqliteQueryResult, sqlx::Error> {
+        let result = sqlx::query("UPDATE todo SET body=$1 WHERE id=$2")
+            .bind(body)
+            .bind(id)
             .execute(&self.connection)
             .await?;
         Ok(result)
